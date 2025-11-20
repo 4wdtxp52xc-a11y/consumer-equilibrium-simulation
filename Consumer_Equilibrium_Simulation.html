@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Consumer Equilibrium Simulator</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h2>Consumer Equilibrium Interactive Simulator</h2>
+
+<p>Adjust the values to see how the budget line and equilibrium point change.</p>
+
+<label>Income: </label><input type="range" id="income" min="50" max="500" value="200"><span id="ival">200</span><br>
+<label>Price of X: </label><input type="range" id="px" min="1" max="20" value="5"><span id="pxval">5</span><br>
+<label>Price of Y: </label><input type="range" id="py" min="1" max="20" value="10"><span id="pyval">10</span><br>
+
+<canvas id="graph" width="500" height="400"></canvas>
+
+<script>
+function update() {
+    let I = parseFloat(document.getElementById('income').value);
+    let Px = parseFloat(document.getElementById('px').value);
+    let Py = parseFloat(document.getElementById('py').value);
+
+    document.getElementById("ival").innerText = I;
+    document.getElementById("pxval").innerText = Px;
+    document.getElementById("pyval").innerText = Py;
+
+    let maxX = I / Px;
+    let maxY = I / Py;
+
+    let eqX = 0.5 * (I / Px);
+    let eqY = 0.5 * (I / Py);
+
+    chart.data.datasets[0].data = [
+        {x: 0, y: maxY},
+        {x: maxX, y: 0}
+    ];
+
+    chart.data.datasets[1].data = [{x: eqX, y: eqY}];
+
+    chart.update();
+}
+
+let ctx = document.getElementById('graph').getContext('2d');
+let chart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+        datasets: [
+            {
+                label: "Budget Line",
+                showLine: true,
+                fill: false,
+                data: []
+            },
+            {
+                label: "Equilibrium Point",
+                pointRadius: 6,
+                data: []
+            }
+        ]
+    },
+    options: {
+        scales: {
+            x: {type: 'linear', min: 0, max: 50},
+            y: {type: 'linear', min: 0, max: 50}
+        }
+    }
+});
+
+update();
+
+document.getElementById('income').oninput = update;
+document.getElementById('px').oninput = update;
+document.getElementById('py').oninput = update;
+</script>
+
+</body>
+</html>
